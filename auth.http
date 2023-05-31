@@ -1,4 +1,5 @@
 GET http://localhost:3000/me
+Authorization: Babeir eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NTU2MTc4MiwiZXhwIjoxNjg1NTYyNjgyfQ.Zf1p9k5LpsE26u2bKTzsYJf09rVp20cuFutSf2FeRMk
 Content-Type: application/json
 
 {
