@@ -101,6 +101,47 @@ const refreshToken = async (
   }
 };
 
-const logout = async (req: Request, res: Response, next: NextFunction) => {};
+const logout = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { refreshToken }: any = req.body;
+
+  try {
+    const decoded: any = verifyToken(refreshToken, refreshTokenSecretKey);
+    const userId = decoded.userId;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    if (user.refresh_token !== refreshToken) {
+      res.status(401).json({ error: "Invalid refresh token" });
+      return;
+    }
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        access_token: null,
+        refresh_token: null,
+      },
+    });
+
+    res.json({ message: "Logout successful" });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export { register, login, refreshToken, logout };

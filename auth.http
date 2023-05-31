@@ -1,5 +1,10 @@
 GET http://localhost:3000/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJZCI6MTJ9LCJpYXQiOjE2MTI0ODQ3MzIsImV4cCI6MTYxMjQ4NTAzMiwiYXVkIjoiMTIifQ.f9fvLYHGbaVka5ecxuYHguTCEh2vHiGAUgkpDktZjz4
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NTU2MTA0MCwiZXhwIjoxNjg2MTY1ODQwfQ.tLAhqaLJ3X4T4J97i_to3QslchgRvyhOt4betuR-VXA"
+}
+
 ###Login Route
 POST http://localhost:3000/auth/login
 Content-Type: application/json
@@ -8,7 +13,6 @@ Content-Type: application/json
   "email": "tnowad@gmail.com",
   "password": "password"
 }
-
 
 ###Register Route
 POST http://localhost:3000/auth/register
@@ -31,3 +35,7 @@ Content-Type: application/json
 ###Logout Route
 DELETE http://localhost:3000/auth/logout
 Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4NTU2MTA0MCwiZXhwIjoxNjg2MTY1ODQwfQ.tLAhqaLJ3X4T4J97i_to3QslchgRvyhOt4betuR-VXA"
+}
