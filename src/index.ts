@@ -6,7 +6,9 @@ import createError from "http-errors";
 import authRouter from "./routes/auth.router";
 import userRouter from "./routes/user.router";
 
-type ErrorType = Error & { status: number };
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 const app = express();
 app.use(cookieParser());
@@ -40,6 +42,13 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+(async () => {
+  await prisma.$connect();
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+})().catch(async (err) => {
+  console.log(err);
+  await prisma.$disconnect();
+  process.exit(1);
 });
