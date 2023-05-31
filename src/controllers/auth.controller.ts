@@ -1,6 +1,11 @@
 import { PrismaClient, User } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  refreshTokenSecretKey,
+  verifyToken,
+} from "../utils/jwt";
 const prisma = new PrismaClient();
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
@@ -54,7 +59,47 @@ const refreshToken = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {};
+): Promise<void> => {
+  const { refreshToken }: any = req.body;
+
+  try {
+    const decoded: any = verifyToken(refreshToken, refreshTokenSecretKey);
+    const userId = decoded.userId;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    if (user.refresh_token != refreshToken) {
+      res.status(401).json({ error: "Invalid refresh token" });
+      return;
+    }
+
+    const accessToken = generateAccessToken(user);
+    const newRefreshToken = generateRefreshToken(user);
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        access_token: accessToken,
+        refresh_token: newRefreshToken,
+      },
+    });
+
+    res.json({ accessToken, refreshToken: newRefreshToken });
+  } catch (error) {
+    next(error);
+  }
+};
 
 const logout = async (req: Request, res: Response, next: NextFunction) => {};
 
